@@ -1,3 +1,6 @@
+//go:build go1.3
+// +build go1.3
+
 package main
 
 import (
@@ -10,6 +13,8 @@ import (
 	cloudsqlconnmysql "cloud.google.com/go/cloudsqlconn/mysql/mysql"
 	"github.com/go-gorp/gorp/v3"
 	"github.com/go-sql-driver/mysql"
+
+	migrate "github.com/rubenv/sql-migrate"
 )
 
 const driverName = "gcpsql"
@@ -18,6 +23,7 @@ func init() {
 	sql.Register(driverName, &gcpSQLDriver{&mysql.MySQLDriver{}})
 
 	dialects[driverName] = gorp.MySQLDialect{Engine: "InnoDB", Encoding: "UTF8"}
+	migrate.MigrationDialects[driverName] = dialects[driverName]
 }
 
 type gcpSQLDriver struct {
